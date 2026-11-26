@@ -23,6 +23,15 @@ def validate(text):
     return text
 
 
+def verify_roundtrip(path, expected):
+    """Read the entry back and confirm it is byte-identical to what we wrote."""
+    with open(path, encoding="utf-8", newline="") as f:
+        actual = f.read()
+    if actual != expected:
+        raise ValueError("round-trip mismatch: file differs from the entry")
+    return len(actual)
+
+
 def main():
     import os
 
@@ -30,6 +39,7 @@ def main():
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8", newline="") as f:
         f.write(entry)
+    verify_roundtrip("/output/entry.txt", entry)
     print("wrote %d characters" % len(entry))
 
 
